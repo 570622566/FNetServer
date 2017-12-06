@@ -23,24 +23,14 @@ public class FHttpServer extends NanoHTTPD {
         super(port);
     }
 
-    public FHttpServer(String hostname, int port) {
-        super(hostname, port);
-
-    }
-
     @Override
     public Response serve(IHTTPSession session) {
-        long startTime = System.currentTimeMillis();
         String file_name = session.getUri().substring(1);
-        Response response;
         if (TextUtils.isEmpty(file_name)) {
             file_name = "index.html";
         }
-        if ((response = getResources(file_name)) == null) {
-            response = responseData(session, file_name);
-        }
-        System.out.println(file_name + "  --耗时：                     " + (System.currentTimeMillis() - startTime));
-        return response;
+        Response response = getResources(file_name);
+        return response == null ? responseData(session, file_name) : response;
     }
 
     /**
@@ -51,11 +41,9 @@ public class FHttpServer extends NanoHTTPD {
      */
     private Response getResources(String file_name) {
         int dot = file_name.lastIndexOf('/');
-        if (dot >= 0) {
-            file_name = file_name.substring(dot + 1);
-        }
-        String filePath;
-        if ((filePath = FHttpManager.getfHttpManager().getFilels().get(file_name)) != null) {
+        file_name = dot >= 0 ? file_name.substring(dot + 1) : file_name;
+        String filePath = FHttpManager.getFHttpManager().getFilels().get(file_name);
+        if (filePath != null) {
             return NanoHTTPD.newChunkedResponse(NanoHTTPD.Response.Status.OK, getMimeTypeForFile(file_name), FStaticResUtils.getFileInp(filePath));//这代表任意的二进制数据传输。
         }
         return null;
@@ -72,19 +60,17 @@ public class FHttpServer extends NanoHTTPD {
     private Response responseData(IHTTPSession session, String file_name) {
         Response response;
         Object[] objects = null;
-        long startTime = System.currentTimeMillis();
         try {
-            Map<String, java.lang.reflect.Method> methods = FHttpManager.getfHttpManager().getMethods();
+            Map<String, java.lang.reflect.Method> methods = FHttpManager.getFHttpManager().getMethods();
             java.lang.reflect.Method method = methods.get(file_name);
             if (method != null) {
-                //允许修改反射属性
-                method.setAccessible(true);
+                method.setAccessible(true); //允许修改反射属性
                 Class cla = method.getDeclaringClass();//获取该方法所在的类
                 Object obj = cla.newInstance();//实例化类
-                Class<?>[] parameterTypes = method.getParameterTypes(); //获得参数类型
+                Class<?>[] parameterTypes = method.getParameterTypes(); //获得方法所有参数的类型
                 if (parameterTypes.length > 0) {
                     objects = new Object[parameterTypes.length];
-                    Map<String, String> sessionMap = session.getParms();
+                    Map<String, String> sessionMap = session.getParms();//获取请求参数
                     Annotation[][] parameterAnnotations = method.getParameterAnnotations();//获取方法参数里的注解
                     for (int i = 0; i < parameterAnnotations.length; i++) {
                         if (parameterTypes[i] == IHTTPSession.class) {
@@ -93,11 +79,11 @@ public class FHttpServer extends NanoHTTPD {
                             objects[i] = sessionMap;
                         } else {
                             Annotation parameterAnnotation = parameterAnnotations[i][0];//获取参数中的第一个注解。所以每个参数只能只有一个注解
-                            if (parameterAnnotation.annotationType() == RequestBody.class) {
+                            if (parameterAnnotation.annotationType() == RequestBody.class) {//返回对象
                                 byte[] buf = new byte[(int) ((HTTPSession) session).getBodySize()];
                                 session.getInputStream().read(buf, 0, buf.length);
                                 objects[i] = new Gson().fromJson(new String(buf), parameterTypes[i]);
-                            } else if (parameterAnnotation.annotationType() == RequestParam.class) {
+                            } else if (parameterAnnotation.annotationType() == RequestParam.class) {//返回指定param
                                 objects[i] = dataConversion(parameterTypes[i], sessionMap, (RequestParam) parameterAnnotation);
                             }
                         }
@@ -110,10 +96,17 @@ public class FHttpServer extends NanoHTTPD {
         } catch (Exception e) {
             response = newFixedLengthResponse(Response.Status.INTERNAL_ERROR, NanoHTTPD.MIME_PLAINTEXT, e.getMessage());
         }
-        System.out.println("耗时：" + (System.currentTimeMillis() - startTime));
         return response;
     }
 
+    /**
+     * param数据转换
+     *
+     * @param parameterTypes
+     * @param sessionMap
+     * @param requestParam
+     * @return
+     */
     private Object dataConversion(Class parameterTypes, Map<String, String> sessionMap, RequestParam requestParam) {
         Object object;
 
@@ -141,6 +134,14 @@ public class FHttpServer extends NanoHTTPD {
     }
 
 
+    /**
+     * response 数据处理
+     *
+     * @param objcls
+     * @param responseObj
+     * @param hasAnnotation
+     * @return
+     */
     private Response responseBody(Class objcls, Object responseObj, boolean hasAnnotation) {
         Response response = null;
         String bodystr = "";

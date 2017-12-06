@@ -5,6 +5,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
@@ -100,5 +101,53 @@ public class FFileUtils {
                 }
             }
         }
+    }
+
+    public static boolean copyFileTo(String srcPath, String destPath) {
+        return copyFileTo(new File(srcPath), new File(destPath));
+    }
+
+    /**
+     * 拷贝一个文件
+     * srcFile源文件
+     * destFile目标文件
+     */
+    public static boolean copyFileTo(File srcFile, File destFile) {
+        boolean copyFile = false;
+        if (!srcFile.exists() || srcFile.isDirectory() || destFile.isDirectory()) {
+            copyFile = false;
+        } else {
+            FileInputStream is = null;
+            FileOutputStream os = null;
+            try {
+                is = new FileInputStream(srcFile);
+                os = new FileOutputStream(destFile);
+                byte[] buffer = new byte[1024];
+                int length;
+                while ((length = is.read(buffer)) > 0) {
+                    os.write(buffer, 0, length);
+                }
+                copyFile = true;
+            } catch (Exception e) {
+                copyFile = false;
+            } finally {
+                if (is != null) {
+                    try {
+                        is.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                if (os != null) {
+                    try {
+                        os.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+        }
+        return copyFile;
     }
 }

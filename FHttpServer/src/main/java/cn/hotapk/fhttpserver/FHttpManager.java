@@ -149,7 +149,7 @@ public class FHttpManager {
         fileNameFilter = sb.toString().substring(0, sb.length() - 1);
     }
 
-    public static FHttpManager getfHttpManager() {
+    public static FHttpManager getFHttpManager() {
         return fHttpManager;
     }
 

@@ -1,12 +1,18 @@
 package com.pcitech.fnetserver;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import cn.hotapk.fastandrutils.utils.FFileUtils;
 import cn.hotapk.fhttpserver.NanoHTTPD;
 import cn.hotapk.fhttpserver.annotation.RequestBody;
 import cn.hotapk.fhttpserver.annotation.RequestMapping;
 import cn.hotapk.fhttpserver.annotation.RequestParam;
 import cn.hotapk.fhttpserver.annotation.ResponseBody;
+import cn.hotapk.fhttpserver.utils.FFileUploadUtils;
 
 /**
  * @author laijian
@@ -19,6 +25,13 @@ public class UserController {
     @RequestMapping("userls")
     public NanoHTTPD.Response getUserLs() {
         return setResponse("ddddd");
+    }
+
+    @RequestMapping("upload")
+    public String upload(NanoHTTPD.IHTTPSession session) {
+        FFileUploadUtils.uploadFile(session, FFileUtils.getRootDir(), "file");
+
+        return "成功";
     }
 
     @RequestMapping("adduser")
