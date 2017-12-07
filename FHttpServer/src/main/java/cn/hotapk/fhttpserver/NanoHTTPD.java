@@ -1049,7 +1049,7 @@ public abstract class NanoHTTPD {
                                     "BAD REQUEST: Content type is multipart/form-data but boundary missing. Usage: GET /example/file.html");
                         }
                         decodeMultipartFormData(getAttributeFromContentHeader(contentTypeHeader, BOUNDARY_PATTERN, null), //
-                                getAttributeFromContentHeader(contentTypeHeader, CHARSET_PATTERN, "US-ASCII"), fbuf, this.parms, files);
+                                getAttributeFromContentHeader(contentTypeHeader, CHARSET_PATTERN, "UTF-8"), fbuf, this.parms, files);
                     } else {
                         byte[] postBytes = new byte[fbuf.remaining()];
                         fbuf.get(postBytes);
