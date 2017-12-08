@@ -32,7 +32,7 @@ public class FStaticResUtils {
      * @param filePath
      * @return
      */
-    public synchronized static InputStream getFileInp(String filePath) {
+    public  static InputStream getFileInp(String filePath) {
 
         if (filePath.startsWith("/")) {
             return FFileUtils.file2Inp(filePath);
