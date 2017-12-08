@@ -24,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
         assets_tv = findViewById(R.id.assets_tv);
         fHttpManager = FHttpManager.init(this, UserController.class, AppController.class);
         fHttpManager.setPort(9999);
+        fHttpManager.setAllowCross(true);
         fHttpManager.startServer();
         FPermissionUtils.requestPermissions(this, 200, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, new FPermissionUtils.OnPermissionListener() {
             @Override

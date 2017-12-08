@@ -1,5 +1,7 @@
 package com.pcitech.fnetserver;
 
+import java.util.Map;
+
 /**
  * @author laijian
  * @version 2017/12/4
@@ -32,5 +34,10 @@ public class UserBean {
 
     public void setPassw(String passw) {
         this.passw = passw;
+    }
+
+    @Override
+    public String toString() {
+        return "userName="+userName+",passw="+passw;
     }
 }

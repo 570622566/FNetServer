@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import cn.hotapk.fastandrutils.utils.FFileUtils;
+import cn.hotapk.fastandrutils.utils.FLogUtils;
 import cn.hotapk.fhttpserver.NanoHTTPD;
 import cn.hotapk.fhttpserver.annotation.RequestBody;
 import cn.hotapk.fhttpserver.annotation.RequestMapping;
@@ -21,29 +22,37 @@ import cn.hotapk.fhttpserver.utils.FFileUploadUtils;
  */
 public class UserController {
 
-    @ResponseBody
     @RequestMapping("userls")
     public NanoHTTPD.Response getUserLs() {
-        return setResponse("ddddd");
+        return setResponse("user列表");
+    }
+
+    @ResponseBody
+    @RequestMapping("getuser")
+    public UserBean getUser() {
+        return new UserBean("admin", "admin");
+    }
+
+    @RequestMapping("gethtml")
+    public String getHtml() {
+        return "index2.html";
     }
 
     @RequestMapping("upload")
     public String upload(NanoHTTPD.IHTTPSession session) {
         FFileUploadUtils.uploadFile(session, FFileUtils.getRootDir(), "file");
-
-        return "成功";
+        return "上传成功";
     }
 
     @RequestMapping("adduser")
-    public NanoHTTPD.Response addUser(@RequestBody List<UserBean> userBean) {
-//        System.out.println("====="+userBean.getPassw());
-        return setResponse("ddddd");
+    public NanoHTTPD.Response addUser(@RequestBody UserBean userBean) {
+        FLogUtils.getInstance().e(userBean);
+        return setResponse("添加成功");
     }
 
     @RequestMapping("edituser")
     public NanoHTTPD.Response editUser(@RequestParam("userName") String userName, @RequestParam("id") int id) {
-        System.out.println("userName===" + userName + "--id==" + id);
-        return setResponse("ddddd");
+        return setResponse("修改成功");
     }
 
     public static NanoHTTPD.Response setResponse(String res) {

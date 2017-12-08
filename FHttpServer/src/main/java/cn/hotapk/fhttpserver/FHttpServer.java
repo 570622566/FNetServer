@@ -96,6 +96,17 @@ public class FHttpServer extends NanoHTTPD {
         } catch (Exception e) {
             response = newFixedLengthResponse(Response.Status.INTERNAL_ERROR, NanoHTTPD.MIME_PLAINTEXT, e.getMessage());
         }
+
+        //下面是跨域的参数（因为一般要和h5联调，所以最好设置一下）
+        if (FHttpManager.getFHttpManager().isAllowCross()) {
+            response.addHeader("Access-Control-Allow-Headers", "Content-Type, Accept, token, Authorization, " +
+                    "X-Auth-Token,X-XSRF-TOKEN,Access-Control-Allow-Headers");
+            response.addHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, HEAD");
+            response.addHeader("Access-Control-Allow-Credentials", "true");
+            response.addHeader("Access-Control-Allow-Origin", "*");
+            response.addHeader("Access-Control-Max-Age", "" + 42 * 60 * 60);
+        }
+
         return response;
     }
 

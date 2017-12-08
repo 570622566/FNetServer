@@ -26,6 +26,7 @@ public class FHttpManager {
     private int port = 8080;//端口号
     private String resdir = "";//静态资源目录，默认空 为assets根目录
     private String fileNameFilter = ".*xml";//文件过滤 默认过滤xml文件
+    private boolean allowCross = false;//是否允许跨站
 
     private FHttpManager(Context context, Class... servercls) {
         FHttpServerUtils.init(context.getApplicationContext());
@@ -148,6 +149,20 @@ public class FHttpManager {
         }
         fileNameFilter = sb.toString().substring(0, sb.length() - 1);
     }
+
+    /**
+     * 设置是否允许ajax请求跨站
+     *
+     * @param allowCross
+     */
+    public void setAllowCross(boolean allowCross) {
+        this.allowCross = allowCross;
+    }
+
+    public boolean isAllowCross() {
+        return allowCross;
+    }
+
 
     public static FHttpManager getFHttpManager() {
         return fHttpManager;

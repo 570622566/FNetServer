@@ -93,6 +93,43 @@ public class UserController {
 fHttpManager.startServer();
 ```
 
+5. 文件下载
+```
+   NanoHTTPD.Response response = NanoHTTPD.newChunkedResponse(NanoHTTPD.Response.Status.OK, "application/octet-stream", inputStream);//这代表任意的二进制数据传输。
+
+   response.addHeader("Accept-Ranges", "bytes");
+
+   response.addHeader("Content-Disposition", "attachment; filename="+"test.java")//可以这里返回文件名称
+
+```
+
+6. 文件上传
+
+```
+   /**
+       * 文件上传
+       *
+       * @param session
+       * @param fileDir 保存文件的目录
+       * @param parm    上传文件的参数
+       * @return
+       */
+      public static boolean uploadFile(NanoHTTPD.IHTTPSession session, String fileDir, String parm) {
+          Map<String, String> files = new HashMap<>();
+          try {
+              session.parseBody(files);
+              Map<String, String> parms = session.getParms();
+              return FFileUtils.copyFileTo(files.get(parm), fileDir + "/" + parms.get(parm));
+          } catch (IOException e) {
+              e.printStackTrace();
+          } catch (NanoHTTPD.ResponseException e) {
+              e.printStackTrace();
+          }
+          return false;
+      }
+
+```
+
 ### 4. 框架使用demo
 
 这块就不出详细demo了
