@@ -49,7 +49,7 @@
 1. gradle添加
 
 ```
-compile 'cn.hotapk:fhttpserver:0.1.0'
+compile 'cn.hotapk:fhttpserver:0.2.0'
 ```
 
 2. manifest添加权限
