@@ -49,7 +49,7 @@
 1. gradle添加
 
 ```
-compile 'cn.hotapk:fhttpserver:0.2.0'
+compile 'cn.hotapk:fhttpserver:0.4.0'
 ```
 
 2. manifest添加权限
@@ -129,6 +129,15 @@ fHttpManager.startServer();
       }
 
 ```
+
+7. index.html 文件冲突
+
+该框架默认打开index.html文件,如果不希望用这文件名可如下修改
+
+```
+fHttpManager.setIndexName(" ")
+```
+
 
 ### 4. 框架使用demo
 
