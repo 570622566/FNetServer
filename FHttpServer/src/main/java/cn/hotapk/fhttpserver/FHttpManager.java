@@ -26,6 +26,7 @@ public class FHttpManager {
     private int port = 8080;//端口号
     private String resdir = "";//静态资源目录，默认空 为assets根目录
     private String fileNameFilter = ".*xml";//文件过滤 默认过滤xml文件
+    private String indexName = "index.html"; // 设置index名称
     private boolean allowCross = false;//是否允许跨站
 
     private FHttpManager(Context context, Class... servercls) {
@@ -135,6 +136,19 @@ public class FHttpManager {
      */
     public Map<String, Method> getMethods() {
         return methodMaps;
+    }
+
+    /**
+     * 设置首页html
+     *
+     * @param indexName
+     */
+    public void setIndexName(String indexName) {
+        this.indexName = indexName;
+    }
+
+    public String getIndexName() {
+        return indexName;
     }
 
     /**

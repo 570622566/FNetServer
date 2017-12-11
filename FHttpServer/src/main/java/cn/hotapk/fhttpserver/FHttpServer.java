@@ -27,7 +27,7 @@ public class FHttpServer extends NanoHTTPD {
     public Response serve(IHTTPSession session) {
         String file_name = session.getUri().substring(1);
         if (TextUtils.isEmpty(file_name)) {
-            file_name = "index.html";
+            file_name = FHttpManager.getFHttpManager().getIndexName();
         }
         Response response = getResources(file_name);
         return response == null ? responseData(session, file_name) : response;
